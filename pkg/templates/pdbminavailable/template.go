@@ -146,8 +146,17 @@ func getDeploymentLikeObjects(lintCtx lintcontext.LintContext, labelSelector lab
 		if err != nil {
 			return nil, err
 		}
+		labelsSet1, err := labels.ConvertSelectorToLabelsMap(selectors.String())
+		fmt.Println("==================== ERR 1 ", err)
+		fmt.Println("==================== MATCHES 1 ", labelSelector.Matches(labelsSet1))
+		labelsSet2, err := labels.ConvertSelectorToLabelsMap(objLabelSelector.String())
+		fmt.Println("==================== ERR 2 ", err)
+		fmt.Println("==================== MATCHES 2 ", labelSelector.Matches(labelsSet2))
+
+		fmt.Println("==================== ORIG ", labelSelector.String(), objLabelSelector.String())
+
 		// Find any Deployment Likes with the same selector as the PDB
-		if labelSelector.String() == objLabelSelector.String() {
+		if labelSelector.Matches(labelsSet2) {
 			objectList = append(objectList, obj.K8sObject)
 		}
 	}
